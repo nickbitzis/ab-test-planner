@@ -1,0 +1,11 @@
+{
+  "name": "ab-test-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plan and read A/B tests: sample size, duration, the peeking problem, and sample ratio checks.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}

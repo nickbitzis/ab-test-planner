@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A/B Test Planner</title>
+  <meta name="description" content="Plan an A/B test, see why peeking breaks it, and read the result with a sample ratio check.">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>A/B Test Planner</h1>
+      <p class="sub">How long to run a conversion test, why checking it every day breaks it, and how to read the result.</p>
+    </div>
+    <div class="actions">
+      <button type="button" id="share">Copy share link</button>
+      <button type="button" id="reset" class="ghost">Reset</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <form id="form" class="panel" autocomplete="off">
+      <fieldset>
+        <legend>Plan</legend>
+        <label>Current conversion rate (%)<input type="number" name="baseline" min="0.01" max="99" step="0.1" data-pct></label>
+        <label>Smallest lift worth detecting (%)<input type="number" name="mde" min="0.5" step="1" data-pct><span class="field-hint">Relative. 10% means 4.0% to 4.4%.</span></label>
+        <div class="grid2">
+          <label>Significance level
+            <select name="alpha"><option value="0.1">10%</option><option value="0.05">5%</option><option value="0.01">1%</option></select>
+          </label>
+          <label>Power
+            <select name="power"><option value="0.7">70%</option><option value="0.8">80%</option><option value="0.9">90%</option><option value="0.95">95%</option></select>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Traffic</legend>
+        <label>Visitors per day<input type="number" name="dailyVisitors" min="1" step="500"></label>
+        <label>Share of visitors in the test (%)<input type="number" name="trafficShare" min="1" max="100" step="5" data-pct></label>
+      </fieldset>
+      <p class="hint">Two variants, an even split, and a two-sided test on conversion rates.</p>
+    </form>
+
+    <section class="results">
+      <div id="cards" class="cards"></div>
+
+      <div class="panel">
+        <div class="chart-head">
+          <h2>Visitors needed per variant, by the lift you want to detect</h2>
+        </div>
+        <div class="chart-wrap">
+          <svg id="size-chart" role="img" aria-label="Visitors needed per variant against minimum detectable lift"></svg>
+          <div id="size-tip" class="tooltip" hidden></div>
+        </div>
+        <p class="hint" id="size-note"></p>
+      </div>
+
+      <div class="panel">
+        <div class="chart-head">
+          <h2>The peeking problem</h2>
+          <ul class="legend">
+            <li><i class="swatch s-pct"></i>Checked every day</li>
+            <li><i class="swatch s-target"></i>Promised false positive rate</li>
+          </ul>
+        </div>
+        <p class="hint top-hint">2,000 simulated A/A tests with no real difference between the variants. Each line shows how many would have declared a winner by that day if someone stopped at the first significant result.</p>
+        <div class="chart-wrap">
+          <svg id="peek-chart" role="img" aria-label="False positive rate by day when checking daily"></svg>
+          <div id="peek-tip" class="tooltip" hidden></div>
+        </div>
+        <p class="hint" id="peek-note"></p>
+      </div>
+
+      <div class="panel" id="analyze">
+        <h2>Read a result</h2>
+        <div class="readout-inputs">
+          <fieldset>
+            <legend>Control (A)</legend>
+            <label>Visitors<input type="number" name="visitorsA" min="0" step="1"></label>
+            <label>Conversions<input type="number" name="conversionsA" min="0" step="1"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Variant (B)</legend>
+            <label>Visitors<input type="number" name="visitorsB" min="0" step="1"></label>
+            <label>Conversions<input type="number" name="conversionsB" min="0" step="1"></label>
+          </fieldset>
+        </div>
+        <div id="readout" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Runs entirely in your browser. Inputs are stored in the page URL so you can share a plan.</footer>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
